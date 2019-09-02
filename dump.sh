@@ -1,21 +1,25 @@
-#!/usr/bin/env bash
+#!/bin/bash
 
 echo -n Please enter the DB name:
 read DB
 
-TABLES=(
-"tbl1"
-"tbl2"
-"tbl3"
-"tbl4"
-"tbl5"
-"tbl100"
-)
 IGNORE_TABLES=""
+IGNORE_TABLE_DATA=""
 
-for TBL in ${TABLES[@]}; do
-  IGNORE_TABLES=$IGNORE_TABLES" --ignore-table=${DB}.${TBL}"
-  echo $TBL
-done
+#ignore_table_listより、定義もデータもダンプしないテーブルを設定
+while read IGNORE_TBL
+do
+  IGNORE_TABLES=$IGNORE_TABLES" --ignore-table=${DB}.${IGNORE_TBL}"
+done < ./ignore_table_list.txt
 
-#mysqldump -u root -p ${IGNORE_TABLES} ${DB} | gzip -c > ${DB}.sql.gz
+#ignore_table_data_listより、データはダンプしないテーブルを設定
+while read IGNORE_TBL_DATA
+do
+  IGNORE_TABLE_DATA=$IGNORE_TABLE_DATA" --ignore-table=${DB}.${IGNORE_TBL_DATA}"
+done < ./ignore_table_data_list.txt
+
+#テーブル定義のみダンプ
+mysqldump -u root -p ${IGNORE_TABLES} ${DB} -d -n | gzip -c > ${DB}.sql.gz
+
+#テーブルデータのみダンプ
+mysqldump -u root -p ${IGNORE_TABLES} ${IGNORE_TABLE_DATA} ${DB} -n | gzip -c > ${DB}.sql.gz
