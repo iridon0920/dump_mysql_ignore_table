@@ -22,7 +22,7 @@ do
 done < ./ignore_table_data_list.txt
 
 #テーブル定義のみダンプ
-mysqldump -u ${USER_NAME} -p ${IGNORE_TABLES} ${DB} -d -n | gzip -c > ${DB}.sql.gz
+mysqldump -u ${USER_NAME} -p ${IGNORE_TABLES} ${DB} -d -n | gzip -c > ${DB}_table.sql.gz
 
 #テーブルデータのみダンプ
-mysqldump -u ${USER_NAME} -p ${IGNORE_TABLES} ${IGNORE_TABLE_DATA} ${DB} -n | gzip -c > ${DB}.sql.gz
+mysqldump -u ${USER_NAME} -p ${IGNORE_TABLES} ${IGNORE_TABLE_DATA} ${DB} -n | gzip -c > ${DB}_table_data.sql.gz
